@@ -39,8 +39,9 @@
     }
 
     /* Centering container that is truly centered in the viewport. The clock lives here. */
+    /* Use fixed so it remains centered relative to the viewport even when mobile browser chrome shows/hides. */
     #center {
-      position: absolute;
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -137,11 +138,10 @@
 
     @media (max-width: 600px) {
       body {
-        justify-content: flex-start;
-        /* Remove large 10vh top padding that pushed content down on many mobile browsers.
-           Use a tiny safe-area inset when available (for notched devices). */
-        padding-top: 0;
-        padding-top: env(safe-area-inset-top);
+        /* Keep the body centered so the fixed #center stays visually centered.
+           Allow a tiny safe-area inset but avoid large fixed padding that pushes content. */
+        justify-content: center;
+        padding-top: env(safe-area-inset-top, 0);
       }
       #clock {
         font-size: 25vw;
