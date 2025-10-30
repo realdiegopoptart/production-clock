@@ -28,15 +28,29 @@
       margin: 0;
       text-align: center;
       overflow: hidden;
+      /* keep body positioned so we can absolutely center the main 'center' block */
+      position: relative;
     }
 
     main {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Centering container that is truly centered in the viewport. The clock lives here. */
+    #center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-grow: 1;
       width: 100%;
+      max-width: 100%;
+      pointer-events: none; /* children like logo are non-interactive by default */
     }
 
     #clock-label {
@@ -59,19 +73,46 @@
     }
 
     /* === BRAND LOGO === */
+    /* The logo is absolutely positioned relative to #center so it doesn't affect vertical centering. */
     #brand-logo {
-      position: fixed;
-      bottom: 2vw;
-      right: 2vw;
-      width: clamp(140px, 22vw, 300px);
+      position: absolute;
+      top: calc(100% + 0.6rem);
+      left: 50%;
+      /* Initial translateX used for centering; animation will also animate translateY and scale. */
+      transform: translateX(-50%);
+      display: block;
+      width: clamp(120px, 22vw, 300px);
       height: auto;
       max-width: 50%;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.15s ease;
+      pointer-events: none; /* don't intercept taps/clicks */
+      will-change: transform, opacity;
+      /* entrance animation: subtle fade + rise; short delay so clock appears first */
+      animation: logo-in 560ms cubic-bezier(.22,1,.36,1) 1 both;
+      animation-delay: 260ms;
     }
 
-    #brand-logo:hover {
-      opacity: 1;
+    /* hover left as no-op because pointer-events is none */
+    #brand-logo:hover { opacity: 1; }
+
+    /* Entrance keyframes: start slightly lower and faint, end at natural position and full opacity */
+    @keyframes logo-in {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+    }
+
+    /* Respect users' reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      #brand-logo {
+        animation: none !important;
+        transition: none !important;
+      }
     }
 
     footer {
@@ -89,24 +130,25 @@
         font-size: 20vw;
       }
       #brand-logo {
-        width: clamp(150px, 28vw, 260px);
-        bottom: 3vw;
-        right: 3vw;
+        width: clamp(140px, 28vw, 260px);
+        top: calc(100% + 0.45rem);
       }
     }
 
     @media (max-width: 600px) {
       body {
         justify-content: flex-start;
-        padding-top: 10vh;
+        /* Remove large 10vh top padding that pushed content down on many mobile browsers.
+           Use a tiny safe-area inset when available (for notched devices). */
+        padding-top: 0;
+        padding-top: env(safe-area-inset-top);
       }
       #clock {
         font-size: 25vw;
       }
       #brand-logo {
-        width: clamp(130px, 38vw, 220px);
-        bottom: 5vw;
-        right: 5vw;
+        width: clamp(110px, 38vw, 200px);
+        top: calc(100% + 0.4rem);
       }
     }
 
@@ -115,20 +157,21 @@
         font-size: 18vh;
       }
       #brand-logo {
-        bottom: 2vh;
-        right: 2vh;
+        top: calc(100% + 0.35rem);
       }
     }
   </style>
 </head>
 <body>
   <main>
-    <div id="clock-label">CURRENT TIME</div>
-    <div id="clock">00:00:00</div>
+    <div id="center">
+      <div id="clock-label">CURRENT TIME</div>
+      <div id="clock">00:00:00</div>
+      <img id="brand-logo" src="media_ministry.png" alt="Catholic Media Ministry Logo" />
+    </div>
   </main>
 
-  <!-- Replace "media_ministry.png" with your actual logo path or URL -->
-  <img id="brand-logo" src="media_ministry.png" alt="Catholic Media Ministry Logo" />
+  <!-- Logo moved into <main> above the clock label -->
 
   <footer>
     <p>clock.diegocasillas.org</p>
