@@ -27,6 +27,7 @@
       height: 100vh;
       margin: 0;
       text-align: center;
+      overflow: hidden;
     }
 
     main {
@@ -35,6 +36,7 @@
       align-items: center;
       justify-content: center;
       flex-grow: 1;
+      width: 100%;
     }
 
     #clock-label {
@@ -53,25 +55,26 @@
       letter-spacing: 0.05em;
       transition: color 0.3s ease;
       text-shadow: none;
+      user-select: none;
     }
 
     /* === BRAND LOGO === */
     #brand-logo {
       position: fixed;
-      bottom: 1vw;
-      right: 1vw;
-      width: 45vw;
-      /* Make logo render white while keeping transparency.
-         brightness(0) turns the image black, invert(1) flips to white.
-         Add a subtle white glow with drop-shadow. */
+      bottom: 2vw;
+      right: 2vw;
+      width: clamp(140px, 22vw, 300px);
+      height: auto;
+      max-width: 45%;
       filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,255,255,0.6));
+      opacity: 0.9;
       transition: opacity 0.3s ease, filter 0.3s ease;
+      pointer-events: none;
     }
 
     #brand-logo:hover {
       opacity: 1;
-      /* Keep the logo white on hover but slightly brighter/glow more */
-      filter: brightness(0.95) invert(1) drop-shadow(0 0 12px rgba(255,255,255,0.85));
+      filter: brightness(0.9) invert(1) drop-shadow(0 0 12px rgba(255,255,255,0.85));
     }
 
     footer {
@@ -80,16 +83,43 @@
       margin-bottom: 1rem;
       font-size: clamp(0.75rem, 1.5vw, 1rem);
       color: var(--clr-text);
+      opacity: 0.75;
+    }
+
+    /* === RESPONSIVENESS === */
+    @media (max-width: 1024px) {
+      #clock {
+        font-size: 20vw;
+      }
+      #brand-logo {
+        width: clamp(150px, 28vw, 260px);
+        bottom: 3vw;
+        right: 3vw;
+      }
     }
 
     @media (max-width: 600px) {
+      body {
+        justify-content: flex-start;
+        padding-top: 10vh;
+      }
       #clock {
         font-size: 25vw;
       }
       #brand-logo {
-        width: 25vw;
+        width: clamp(130px, 38vw, 220px);
         bottom: 5vw;
         right: 5vw;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      #clock {
+        font-size: 18vh;
+      }
+      #brand-logo {
+        bottom: 2vh;
+        right: 2vh;
       }
     }
   </style>
@@ -100,7 +130,7 @@
     <div id="clock">00:00:00</div>
   </main>
 
-  <!-- Replace "logo.png" with your actual logo filename or hosted image URL -->
+  <!-- Replace "media_ministry.png" with your actual logo path or URL -->
   <img id="brand-logo" src="media_ministry.png" alt="Catholic Media Ministry Logo" />
 
   <footer>
